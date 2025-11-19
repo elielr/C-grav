@@ -5,7 +5,7 @@ Our goal is to maximize the duration of this fall before crash (or explore the p
 
 To get an idea of the problem at hand, here is a display of a random initial configuration (0,0) and a map of the score function (1,1) as well as a crash site map (0,1) and an exemple of trajectory for a good initial speed (1,0). 
 
-While the problem is easy to write, the amount of discontinuities and the sensitivity to initial conditions, especially in regions of interest with large scores, sparked my curiosity (there is always something fascinating about chaos and fractals).
+While the problem is easy to write, the amount of discontinuities in the score map and the sensitivity to initial conditions, especially in regions of interest with large scores, sparked my curiosity (there is always something fascinating about chaos and fractals).
 
 ![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/%5B-0.09036600036890903%2C%20-0.27841659752433084%5D%20-%203%20(g1000).png?raw=true)
 
