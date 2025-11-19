@@ -6,7 +6,7 @@ from tools.general import Display
 class GridSearch :
     def __init__(self,traj,n,bounds=None):
         self.traj = traj # instance of Trajectory
-        self.ngrid = n #grid resolution
+        self.ngrid = n # grid resolution
         self.bounds = bounds # boundaries of solution exploration
         if bounds is None:
             self.bounds = self.traj.bounds
