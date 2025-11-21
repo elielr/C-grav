@@ -7,6 +7,6 @@ To get an idea of the problem at hand, here is a display of a random initial con
 
 While the problem is easy to write, the amount of discontinuities in the score map and the sensitivity to initial conditions, especially in regions of interest with large scores, sparked my curiosity (there is always something fascinating about chaos and fractals).
 
-![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/%5B-0.09036600036890903%2C%20-0.27841659752433084%5D%20-%203%20(g1000).png?raw=true)
+![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/Intro.png?raw=true)
 
 This work was inspired by the highly addictive game Cosmic Drift by Shakawah.
