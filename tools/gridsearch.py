@@ -70,12 +70,15 @@ class DisplayGridSearch(Display, GridSearch):
             cbar = fig.colorbar(pcm2)
         cbar.set_ticks(ticks=[10**i for i in range(int(np.floor(np.log10(np.max(self.score))+1)))]); cbar.ax.yaxis.set_minor_formatter(plt.NullFormatter())
 
-    def plot4(self, figsize = (16,16), save = False):
+    def plot4(self, figsize = (16,16), title = None, save = False):
         fig, axs = plt.subplots(2, 2, figsize=figsize,layout='constrained',subplot_kw = {'aspect':1})
+        if not title is None:
+            fig.suptitle(title)
         self.plot_config(title=True, ax=axs[0,0])
         self.plot_traj(self.vbest,axs[1,0])
         self.heatmap_crashsite(axs[0,1],fig)
         self.heatmap_score(axs[1,1],fig)
         if save :
             np.save('save/planets_loc/[{}, {}].npy'.format(self.traj.p0[0],self.traj.p0[1]),self.traj.loc)
-            fig.savefig('figs/[{}, {}] - {} (g{}).png'.format(self.traj.p0[0],self.traj.p0[1],self.traj.N,self.n),bbox_inches='tight')
+            title = '[{}, {}] - g({})'.format(self.traj.p0[0],self.traj.p0[1],self.n) if title is None else title
+            fig.savefig('figs/{}.png'.format(title),bbox_inches='tight')
