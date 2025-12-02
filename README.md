@@ -9,4 +9,4 @@ While the problem is easy to write, the amount of discontinuities in the score m
 
 ![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/Intro.png?raw=true)
 
-This work was inspired by the highly addictive game Cosmic Drift by Shakawah.
+This work was inspired by the highly addictive game [Cosmic Drift](https://store.steampowered.com/app/3601890/Cosmic_Drift/) by Shakawah.
