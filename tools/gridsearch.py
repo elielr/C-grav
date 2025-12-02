@@ -80,5 +80,5 @@ class DisplayGridSearch(Display, GridSearch):
         self.heatmap_score(axs[1,1],fig)
         if save :
             np.save('save/planets_loc/[{}, {}].npy'.format(self.traj.p0[0],self.traj.p0[1]),self.traj.loc)
-            title = '[{}, {}] - g({})'.format(self.traj.p0[0],self.traj.p0[1],self.n) if title is None else title
+            title = '[{}, {}] - g({})'.format(self.traj.p0[0],self.traj.p0[1],self.ngrid) if title is None else title
             fig.savefig('figs/{}.png'.format(title),bbox_inches='tight')
