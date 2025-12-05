@@ -90,6 +90,11 @@ class Trajectory(Planets) :
         self.p_hist, self.v_hist = [], []
         self.p, self.v = self.p0, v0
 
+    def evaluate(self,v0,border=True):
+        self.reset(v0=v0)
+        P, _ = self.compute_traj(border)
+        return np.array([self.stop_cond(border), (P.shape[0]-1)*self.dt])       
+
 class Display:
     def __init__(self, traj, n=1000, color_list=['orchid', 'mediumorchid', 'darkorchid', 'blueviolet', 'rebeccapurple', 'purple', 'darkmagenta','mediumvioletred','hotpink']):
         self.n = n
