@@ -21,7 +21,6 @@ class LineSearch:
         if not v1 is None :
             self.v0[0] = v1
         self.res[0] = self.ls_evaluate(0)
-        self.res[-1,0] = 1
         if not v2 is None:
             self.v0[1] = v2
             self.res[-1] = self.ls_evaluate(1)
