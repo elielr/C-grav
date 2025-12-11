@@ -58,7 +58,7 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
             ax.add_patch(plt.Circle((self.traj.loc[i,0], self.traj.loc[i,1]), self.traj.radius,color='k',alpha=0.2))
             ax.text(self.traj.loc[i,0] , self.traj.loc[i,1],'{}'.format(i+1),horizontalalignment='center',verticalalignment='center',c='w',alpha=0.5,size=20)
         ax.scatter((self.traj.p0+self.vbest)[0],(self.traj.p0+self.vbest)[1], s=80, facecolors='none', edgecolors='r',linewidths=2)
-        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='+',s=100)
+        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='+',s=1e-3*min(ax.get_window_extent().width, ax.get_window_extent().height)**2)
         cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=self.colormap),ax=ax,ticks = (np.arange(self.traj.N+2)+0.5)/(self.traj.N+2))
         cbar.ax.set_yticklabels(self.colorbar_ticklabels,rotation='vertical',verticalalignment='center')
 
@@ -70,7 +70,10 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
             polygon = [self.vor.vertices[i] for i in self.vor.regions[self.vor.point_region[i]]]
             ax.fill(*zip(*polygon),color = mpl.colormaps['managua']((np.log10(self.res[i,1])-np.log10(self.res[:,1].min()))/(np.log10(self.res[:,1].max())-np.log10(self.res[:,1].min()))))
         ax.scatter((self.traj.p0+self.vbest)[0],(self.traj.p0+self.vbest)[1], s=80, facecolors='none', edgecolors='r',linewidths=2)
-        cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=mpl.colormaps['managua']),ax=ax,ticks = np.arange(self.traj.N+2)+1)
+        if np.max(self.res[...,1].T)==self.traj.Tmax:
+            cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=mpl.colormaps['managua']),ax=ax,ticks = np.arange(self.traj.N+2)+1,extend='max')
+        else :
+            cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=mpl.colormaps['managua']),ax=ax,ticks = np.arange(self.traj.N+2)+1)
         cbar.set_ticks(ticks=[(i-np.log10(self.res[:,1].min()))/(np.log10(self.res[:,1].max())-np.log10(self.res[:,1].min())) for i in range(int(np.floor(np.log10(np.max(self.res[...,1]))+1)))]);
         cbar.ax.minorticks_on(); cbar.ax.yaxis.set_ticks([(np.log10(j*10**i)-np.log10(self.res[:,1].min()))/(np.log10(self.res[:,1].max())-np.log10(self.res[:,1].min())) 
                                                           for i in range(int(np.floor(np.log10(np.min(self.res[...,1])))),int(np.floor(np.log10(np.max(self.res[...,1]))+1)))
