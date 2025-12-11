@@ -35,8 +35,10 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
         MonteCarloSearch.__init__(self, traj, n)
         self.montecarlo_search()
         self.vbest_montecarlo()
-        self.traj.bounds[0,0]
-        self.points_vor = np.append(self.points, [[-3,-3],[-3,3],[3,-3],[3,3]], axis=0) # to avoid infinite voronoi regions 
+        self.points_vor = np.append(self.points, [[self.traj.bounds[0,0]-self.traj.span[0],self.traj.bounds[1,0]-self.traj.span[1]],
+                                                  [self.traj.bounds[0,0]-self.traj.span[0],self.traj.bounds[1,1]+self.traj.span[1]],
+                                                  [self.traj.bounds[0,1]+self.traj.span[0],self.traj.bounds[1,0]-self.traj.span[1]],
+                                                  [self.traj.bounds[0,1]+self.traj.span[0],self.traj.bounds[1,1]+self.traj.span[1]]], axis=0) # to avoid infinite voronoi regions inside of bounds
         self.vor = Voronoi(self.points_vor[:,:2])
 
     def plot_mc_config(self,title=False,ax=None):
@@ -80,8 +82,8 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
                                                           for j in range(10) if j*10**i>=self.res[:,1].min() and j*10**i<=self.res[:,1].max()], minor=True)
         cbar.ax.set_yticklabels(labels=['$10^{}$'.format(i) for i in range(int(np.floor(np.log10(np.max(self.res[...,1]))+1)))],verticalalignment='center')
 
-    def plot4(self, figsize = (16,16), save = False):
-        fig, axs = plt.subplots(2, 2, figsize=figsize,layout='constrained',subplot_kw = {'aspect':1})
+    def plot4(self, figsize = None, save = False):
+        fig, axs = plt.subplots(2,2,figsize=(16,16*self.traj.span[1]/self.traj.span[0]) if figsize is None else figsize,layout='constrained',subplot_kw = {'aspect':1})
         self.plot_mc_config(title=True, ax=axs[0,0])
         self.plot_traj(self.vbest,ax=axs[1,0])
         self.vor_crashsite(axs[0,1])

@@ -215,8 +215,8 @@ class DisplayLineSearch(Display, LineSearch):
         ax.set_xticks([]),ax.set_yticks([])
         return sc
 
-    def plot4(self, figsize = (16,16), save = False):
-        fig, axs = plt.subplots(2, 2, figsize=figsize,layout='constrained',subplot_kw = {'aspect':1})
+    def plot4(self, figsize = None, save = False):
+        fig, axs = plt.subplots(2,2,figsize=(16,16*self.traj.span[1]/self.traj.span[0]) if figsize is None else figsize,layout='constrained',subplot_kw = {'aspect':1})
         self.plot_ls_config(title=True, ax=axs[0,0])
         self.plot_traj(self.vbest,ax=axs[1,0])
         sc1 = self.scatter2D_crash(axs[0,1])

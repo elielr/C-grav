@@ -65,8 +65,8 @@ class DisplayGridSearch(Display, GridSearch):
             cbar = plt.colorbar(pcm2)
         cbar.set_ticks(ticks=[10**i for i in range(int(np.floor(np.log10(np.max(self.res[...,1]))+1)))]); cbar.ax.yaxis.set_minor_formatter(plt.NullFormatter())
 
-    def plot4(self, figsize = (16,16), title = None, save = False):
-        fig, axs = plt.subplots(2, 2, figsize=figsize,layout='constrained',subplot_kw = {'aspect':1})
+    def plot4(self, figsize = None, title = None, save = False):
+        fig, axs = plt.subplots(2,2,figsize=(16,16*self.traj.span[1]/self.traj.span[0]) if figsize is None else figsize,layout='constrained',subplot_kw = {'aspect':1})
         if not title is None:
             fig.suptitle(title)
         self.plot_config(title=True, ax=axs[0,0])
