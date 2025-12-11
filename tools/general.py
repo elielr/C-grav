@@ -107,20 +107,21 @@ class Display:
         self.pot = self.traj.potential(self.xy)
         self.pot_min = -self.traj.N*self.traj.G/self.traj.radius # minimum potential for colorbars, approximately potential value at planet surface
 
-        self.colormap = colors.ListedColormap(color_list[:self.traj.N]+["#081838", "#8FE8FF"])
+        self.color_list = color_list[:self.traj.N]+["#081838", "#8FE8FF"]
+        self.colormap = colors.ListedColormap(self.color_list)
         self.colorbar_ticklabels = ['planet {}'.format(i+1) for i in range(self.traj.N)] + ['border', '(infinite)']
 
     def plot_config(self,title=False,ax=None):
         if ax is None:
-            fig, ax = plt.subplots(figsize=(4,4),layout='constrained',subplot_kw = {'aspect':1})
+            _, ax = plt.subplots(figsize=(4,4),layout='constrained',subplot_kw = {'aspect':1})
         if title:
             ax.set_title('Initial configuration : p0 = [{}, {}]'.format(self.traj.p0[0],self.traj.p0[1]))
-        c = ax.pcolormesh(self.xx, self.yy, self.pot.T, cmap='binary',vmin=self.pot_min,vmax=0)
+        ax.pcolormesh(self.xx, self.yy, self.pot.T, cmap='binary',vmin=self.pot_min,vmax=0)
         ax.axis([self.traj.bounds[0,0], self.traj.bounds[0,1], self.traj.bounds[1,0], self.traj.bounds[1,1]])
         ax.set_xticks([]),ax.set_yticks([])
         for i in range(self.traj.N):
             ax.add_patch(plt.Circle((self.traj.loc[i,0] , self.traj.loc[i,1]),self.traj.radius,color='k'))
-        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='*',s=100)
+        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='*',s=5e-4*min(ax.get_window_extent().width, ax.get_window_extent().height)**2)
 
     def plot_traj(self,v0,ax,border=True):
         self.traj.reset(v0=v0)
