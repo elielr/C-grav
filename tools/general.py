@@ -121,7 +121,7 @@ class Display:
         ax.set_xticks([]),ax.set_yticks([])
         for i in range(self.traj.N):
             ax.add_patch(plt.Circle((self.traj.loc[i,0] , self.traj.loc[i,1]),self.traj.radius,color='k'))
-        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='*',s=5e-4*min(ax.get_window_extent().width, ax.get_window_extent().height)**2)
+        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='*',s=5e-4*min(ax.get_window_extent().width, ax.get_window_extent().height)**2,zorder=2.5)
 
     def plot_traj(self,v0,ax,border=True):
         self.traj.reset(v0=v0)
@@ -133,6 +133,6 @@ class Display:
         ax.set_xticks([]),ax.set_yticks([])
         for i in range(self.traj.N):
             ax.add_patch(plt.Circle((self.traj.loc[i,0] , self.traj.loc[i,1]),self.traj.radius,color='k'))
-        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='x',s=40,zorder=3)
-        ax.arrow(self.traj.p0[0],self.traj.p0[1],v0[0],v0[1],color='r',head_width=0.05,alpha=0.8,length_includes_head=True,zorder=2)
-        ax.plot(P[:,0],P[:,1],linewidth=1,zorder=1)
+        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='x',s=2e-4*min(ax.get_window_extent().width, ax.get_window_extent().height)**2,zorder=2.5)
+        ax.arrow(self.traj.p0[0],self.traj.p0[1],v0[0],v0[1],color='r',head_width=0.05,alpha=0.8,length_includes_head=True,zorder=2.1)
+        ax.plot(P[:,0],P[:,1],linewidth=1,zorder=2)

@@ -51,7 +51,7 @@ class DisplayGridSearch(Display, GridSearch):
             ax.add_patch(plt.Circle((self.traj.loc[i,0], self.traj.loc[i,1]), self.traj.radius,color='k',alpha=0.2))
             ax.text(self.traj.loc[i,0] , self.traj.loc[i,1],'{}'.format(i+1),horizontalalignment='center',verticalalignment='center',c='w',alpha=0.5,size=20)
         ax.scatter((self.traj.p0+self.vbest)[0],(self.traj.p0+self.vbest)[1], s=80, facecolors='none', edgecolors='r',linewidths=2)
-        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='+',s=100)
+        ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='+',s=1e-3*min(ax.get_window_extent().width, ax.get_window_extent().height)**2)
 
     def heatmap_score(self, ax):
         ax.set_title('Flight time')
