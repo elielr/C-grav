@@ -56,13 +56,14 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
         for i in range(self.n): # no need to add "if not -1 in region :" since those are at n,...,n+4
             polygon = [self.vor.vertices[i] for i in self.vor.regions[self.vor.point_region[i]]]
             ax.fill(*zip(*polygon),color = self.color_list[int(self.res[i,0])-1])
+        cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=self.colormap),ax=ax,ticks=(np.arange(self.traj.N+2)+0.5)/(self.traj.N+2))
+        cbar.ax.set_yticklabels(self.colorbar_ticklabels,rotation='vertical',verticalalignment='center')
         for i in range(self.traj.N):
             ax.add_patch(plt.Circle((self.traj.loc[i,0], self.traj.loc[i,1]), self.traj.radius,color='k',alpha=0.2))
             ax.text(self.traj.loc[i,0] , self.traj.loc[i,1],'{}'.format(i+1),horizontalalignment='center',verticalalignment='center',c='w',alpha=0.5,size=20)
         ax.scatter((self.traj.p0+self.vbest)[0],(self.traj.p0+self.vbest)[1], s=80, facecolors='none', edgecolors='r',linewidths=2)
         ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='+',s=1e-3*min(ax.get_window_extent().width, ax.get_window_extent().height)**2)
-        cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=self.colormap),ax=ax,ticks = (np.arange(self.traj.N+2)+0.5)/(self.traj.N+2))
-        cbar.ax.set_yticklabels(self.colorbar_ticklabels,rotation='vertical',verticalalignment='center')
+ 
 
     def vor_score(self, ax):
         ax.set_title('Flight time')
