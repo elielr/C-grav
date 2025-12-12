@@ -59,10 +59,7 @@ class DisplayGridSearch(Display, GridSearch):
         ax.scatter((self.traj.p0+self.vbest)[0],(self.traj.p0+self.vbest)[1], s=80, facecolors='none', edgecolors='r',linewidths=2)
         ax.axis([self.gridxx.min(), self.gridxx.max(), self.gridyy.min(), self.gridyy.max()])
         ax.set_xticks([]),ax.set_yticks([])
-        if np.max(self.res[...,1].T)==self.traj.Tmax:
-            cbar = plt.colorbar(pcm2,extend='max')
-        else :
-            cbar = plt.colorbar(pcm2)
+        cbar = plt.colorbar(pcm2,extend='max' if np.max(self.res[...,1].T)==self.traj.Tmax else 'neither')
         cbar.set_ticks(ticks=[10**i for i in range(int(np.floor(np.log10(np.max(self.res[...,1]))+1)))]); cbar.ax.yaxis.set_minor_formatter(plt.NullFormatter())
 
     def plot4(self, figsize = None, title = None, save = False):

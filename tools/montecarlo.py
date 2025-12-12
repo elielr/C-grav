@@ -45,7 +45,7 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
         if ax is None :
             _, ax = plt.subplots(figsize=(32,32),layout='constrained',subplot_kw = {'aspect':1})
         self.plot_config(title,ax)
-        voronoi_plot_2d(self.vor, ax, show_vertices=False, line_colors='w',point_size=np.sqrt(ax.get_window_extent().width* ax.get_window_extent().height)/(np.sqrt(self.n)*10),alpha=0.8)
+        voronoi_plot_2d(self.vor, ax, show_vertices=False, line_colors='w',point_size=np.sqrt(ax.get_window_extent().width* ax.get_window_extent().height)/(np.sqrt(self.n)*10),line_alpha=0.5)
         ax.axis([self.traj.bounds[0,0], self.traj.bounds[0,1], self.traj.bounds[1,0], self.traj.bounds[1,1]])
         ax.set_xticks([]),ax.set_yticks([])
 
@@ -71,11 +71,8 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
         for i in range(self.n): # no need to add if not -1 in region since those are at n,...,n+4
             polygon = [self.vor.vertices[i] for i in self.vor.regions[self.vor.point_region[i]]]
             ax.fill(*zip(*polygon),color = mpl.colormaps['managua']((np.log10(self.res[i,1])-np.log10(self.res[:,1].min()))/(np.log10(self.res[:,1].max())-np.log10(self.res[:,1].min()))))
-        if np.max(self.res[...,1].T)==self.traj.Tmax:
-            cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=mpl.colormaps['managua']),ax=ax,ticks = np.arange(self.traj.N+2)+1,extend='max')
-        else :
-            cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=mpl.colormaps['managua']),ax=ax,ticks = np.arange(self.traj.N+2)+1)
-        cbar.set_ticks(ticks=[(i-np.log10(self.res[:,1].min()))/(np.log10(self.res[:,1].max())-np.log10(self.res[:,1].min())) for i in range(int(np.floor(np.log10(np.max(self.res[...,1]))+1)))]);
+        cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=mpl.colormaps['managua']),ax=ax,extend='max' if np.max(self.res[...,1].T)==self.traj.Tmax else 'neither')
+        cbar.set_ticks(ticks=[(i-np.log10(self.res[:,1].min()))/(np.log10(self.res[:,1].max())-np.log10(self.res[:,1].min())) for i in range(int(np.floor(np.log10(np.max(self.res[...,1]))+1)))])
         cbar.ax.minorticks_on(); cbar.ax.yaxis.set_ticks([(np.log10(j*10**i)-np.log10(self.res[:,1].min()))/(np.log10(self.res[:,1].max())-np.log10(self.res[:,1].min())) 
                                                           for i in range(int(np.floor(np.log10(np.min(self.res[...,1])))),int(np.floor(np.log10(np.max(self.res[...,1]))+1)))
                                                           for j in range(10) if j*10**i>=self.res[:,1].min() and j*10**i<=self.res[:,1].max()], minor=True)
