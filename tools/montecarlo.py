@@ -63,7 +63,6 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
             ax.text(self.traj.loc[i,0] , self.traj.loc[i,1],'{}'.format(i+1),horizontalalignment='center',verticalalignment='center',c='w',alpha=0.5,size=20)
         ax.scatter((self.traj.p0+self.vbest)[0],(self.traj.p0+self.vbest)[1], s=80, facecolors='none', edgecolors='r',linewidths=2)
         ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='+',s=1e-3*min(ax.get_window_extent().width, ax.get_window_extent().height)**2)
- 
 
     def vor_score(self, ax):
         ax.set_title('Flight time')
@@ -72,7 +71,6 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
         for i in range(self.n): # no need to add if not -1 in region since those are at n,...,n+4
             polygon = [self.vor.vertices[i] for i in self.vor.regions[self.vor.point_region[i]]]
             ax.fill(*zip(*polygon),color = mpl.colormaps['managua']((np.log10(self.res[i,1])-np.log10(self.res[:,1].min()))/(np.log10(self.res[:,1].max())-np.log10(self.res[:,1].min()))))
-        ax.scatter((self.traj.p0+self.vbest)[0],(self.traj.p0+self.vbest)[1], s=80, facecolors='none', edgecolors='r',linewidths=2)
         if np.max(self.res[...,1].T)==self.traj.Tmax:
             cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=mpl.colormaps['managua']),ax=ax,ticks = np.arange(self.traj.N+2)+1,extend='max')
         else :
@@ -82,6 +80,7 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
                                                           for i in range(int(np.floor(np.log10(np.min(self.res[...,1])))),int(np.floor(np.log10(np.max(self.res[...,1]))+1)))
                                                           for j in range(10) if j*10**i>=self.res[:,1].min() and j*10**i<=self.res[:,1].max()], minor=True)
         cbar.ax.set_yticklabels(labels=['$10^{}$'.format(i) for i in range(int(np.floor(np.log10(np.max(self.res[...,1]))+1)))],verticalalignment='center')
+        ax.scatter((self.traj.p0+self.vbest)[0],(self.traj.p0+self.vbest)[1], s=80, facecolors='none', edgecolors='r',linewidths=2)
 
     def plot4(self, figsize = None, save = False):
         fig, axs = plt.subplots(2,2,figsize=(16,16*self.traj.span[1]/self.traj.span[0]) if figsize is None else figsize,layout='constrained',subplot_kw = {'aspect':1})
