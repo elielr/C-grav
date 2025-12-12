@@ -88,4 +88,4 @@ class DisplayMonteCarlo(Display, MonteCarloSearch):
         if save :
             np.save('save/planets_loc/[{}, {}].npy'.format(self.traj.p0[0],self.traj.p0[1]),self.traj.loc)
             np.save('save/montecarlo/[{}, {}].npy'.format(self.traj.p0[0],self.traj.p0[1]),self.points)
-            fig.savefig('figs/[{}, {}] - mc({}).png'.format(self.traj.p0[0],self.traj.p0[1],self.traj.N,self.n),bbox_inches='tight')
+            fig.savefig('figs/[{}, {}] - mc({}).png'.format(self.traj.p0[0],self.traj.p0[1],self.n),bbox_inches='tight')
