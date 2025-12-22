@@ -9,11 +9,11 @@ class MonteCarloSearch:
     def __init__(self, traj, n=100):
         self.n = n # total number of evaluations
         self.traj = traj
-        self.res = np.zeros((n,2)) # stores the coordinates, the destination and the score associated to each evaluation
-        self.points = np.zeros((n,2))
-        self.opt_ind = np.zeros((2,1))
-        self.opt = np.zeros(2)
-        self.vbest = np.zeros(2)
+        self.points = np.zeros((n,2)) # coordinates at which the score is evaluated
+        self.res = np.zeros((n,2)) # dresults of each evaluation (destination and score)
+        self.opt_ind = np.zeros((2,1)) # list of optimum indices
+        self.opt = np.zeros(2) # an element from opt_ind
+        self.vbest = np.zeros(2) # initial velocity for optimum
         self.montecarlo_search()
         self.vbest_montecarlo()
 
@@ -71,6 +71,7 @@ class DisplayVoronoi(Display):
         for i in range(self.sol.n): # no need to add if not -1 in region since those are at n,...,n+4
             polygon = [self.vor.vertices[i] for i in self.vor.regions[self.vor.point_region[i]]]
             ax.fill(*zip(*polygon),color = mpl.colormaps['managua']((np.log10(self.sol.res[i,1])-np.log10(self.sol.res[:,1].min()))/(np.log10(self.sol.res[:,1].max())-np.log10(self.sol.res[:,1].min()))))
+        # Getting a Voronoi colorbar to behave just as it would for a regular heatmap
         cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=mpl.colormaps['managua']),ax=ax,extend='max' if np.max(self.sol.res[...,1].T)==self.traj.Tmax else 'neither')
         cbar.set_ticks(ticks=[(i-np.log10(self.sol.res[:,1].min()))/(np.log10(self.sol.res[:,1].max())-np.log10(self.sol.res[:,1].min())) for i in range(int(np.floor(np.log10(np.max(self.sol.res[...,1]))+1)))])
         cbar.ax.minorticks_on(); cbar.ax.yaxis.set_ticks([(np.log10(j*10**i)-np.log10(self.sol.res[:,1].min()))/(np.log10(self.sol.res[:,1].max())-np.log10(self.sol.res[:,1].min())) 
