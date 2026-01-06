@@ -24,7 +24,7 @@ class GridSearch :
     def compute_grid(self, border=True):
         for i in range(self.gridx.size):
             for j in range(self.gridy.size):
-                self.res[i,j,:] = self.traj.evaluate(np.array([self.gridx[i],self.gridy[j]])-self.traj.p0)
+                self.res[i,j,:] = self.traj.evaluate(np.array([self.gridx[i],self.gridy[j]])-self.traj.p0,border)
 
     def vbest_grid(self):
         self.opt_indices = np.array(np.where(self.res[...,1] == self.res[...,1].max())).T
@@ -34,10 +34,10 @@ class GridSearch :
         self.traj.reset(v0=self.vbest)
 
 class DisplayGridSearch(Display, GridSearch):
-    def __init__(self, traj, n, bounds = None):
+    def __init__(self, traj, n, bounds = None, border=True):
         Display.__init__(self, traj)
         GridSearch.__init__(self, traj, n, bounds)
-        self.compute_grid()
+        self.compute_grid(border)
         self.vbest_grid()
 
     def heatmap_crashsite(self, ax):
