@@ -42,55 +42,54 @@ class FractalSearch:
         self.opt = np.zeros(2) # an element from opt_ind
         self.vbest = np.zeros(2) # initial velocity for optimum
 
-    def fractal_search_crosspattern(self,lvl0=0,lvlmax=8,greed=False):
+    def fractal_grid(self,lvl0=0,lvlmax=8,greed=False):
+        self.points, self.res = np.zeros((self.n+2,2)), np.zeros((self.n+2,3)) # we allow two more evaluations and crop at the end because each loop step can trigger up to 3 evaluations
         self.points[:2] = np.array([[self.traj.bounds[0,0],self.traj.bounds[1,0]], [self.traj.bounds[1,1],self.traj.bounds[1,1]]],dtype=float)
         self.res[0,1:], self.res[1,1:] = self.traj.evaluate(self.points[0]-self.traj.p0), self.traj.evaluate(self.points[1]-self.traj.p0)
         n_call = 2
-        self.L = [(0,1,max(self.res[0,-1],self.res[1,-1]))]
-        L_rejected = []
-        while n_call<self.n-2 and len(self.L)>0:
+        self.L = [(0,1,max(self.res[0,-1],self.res[1,-1]))] # list of segments to explore (extreme1 index, extreme2 index, score = max of scores at both extreme points)
+        L_rejected = [] # list of rejected segments, if at some point self.L is empty, L_rejected is explored
+        while n_call<self.n and len(self.L)>0:
             s = np.zeros((5),dtype=int)
-            s[0], s[1], _ = self.L.pop()
-            lvl = max(self.res[s[0],0],self.res[s[1],0])
-            if len(self.L)==0 :
-                if greed == True:
-                    L_rejected.sort(key=lambda x:x[-1])
-                self.L = L_rejected # si on a rien trouvé de mieux, autant aller chercher des frontières qu'on aurait pu rater entre les mailles
-            mid, point1, point2 = (self.points[s[0]]+self.points[s[1]])/2, np.array([self.points[s[0],0],self.points[s[1],1]]), np.array([self.points[s[1],0],self.points[s[0],1]])
+            s[1], s[2], _ = self.L.pop()
+            # s[1] and s[2] are the indices of the parents, s[0] the index of the middle, and s[3] and s[4] the other two vertices of the rectangle
+            lvl = 1 + max(self.res[s[1],0],self.res[s[2],0]) # taking the max is overkill, both have the same value in fractal_grid but it conveys the idea
+            mid, point1, point2 = (self.points[s[1]]+self.points[s[2]])/2, np.array([self.points[s[1],0],self.points[s[2],1]]), np.array([self.points[s[2],0],self.points[s[1],1]])
             #point1, point2 = mid + np.array([[0,-1],[1,0]]).dot(self.points[s[0]]-mid), mid - np.array([[0,-1],[1,0]]).dot(self.points[s[0]]-mid) #true rotation
-            if np.where(np.all(self.points[:n_call] == mid,axis=1))[0].size == 0:
-                s[4] = n_call
-                self.points[s[4]] = mid
-                self.res[s[4]] = np.concatenate([[lvl+1],self.traj.evaluate(mid-self.traj.p0)])
-                n_call+=1
-            else :
-                s[4] = np.where(np.all(self.points == mid,axis=1))[0][0]
-            # check whether the point has already been evaluated (otherwise many evaluations get wasted on the same point)
+            s[0] = n_call # the middle has never been previously evaluated
+            self.points[s[0]] = mid
+            self.res[s[0]] = np.concatenate([[lvl],self.traj.evaluate(mid-self.traj.p0)])
+            n_call+=1
+            # check whether point1 has already been evaluated, if not new evaluation (same for point2, mid has never already been visited for fractal_grid)
             if np.where(np.all(self.points[:n_call] == point1,axis=1))[0].size == 0:
-                s[2] = n_call
-                self.points[s[2]] = point1
-                self.res[s[2]] = np.concatenate([[lvl+1], self.traj.evaluate(point1-self.traj.p0)])
-                n_call+=1
-            else :
-                s[2] = np.where(np.all(self.points[:n_call] == point1,axis=1))[0][0]
-            if np.where(np.all(self.points == point2,axis=1))[0].size == 0:
                 s[3] = n_call
-                self.points[s[3]] = point2
-                self.res[s[3]] = np.concatenate([[lvl+1], self.traj.evaluate(point2-self.traj.p0)])
+                self.points[s[3]] = point1
+                self.res[s[3]] = np.concatenate([[lvl], self.traj.evaluate(point1-self.traj.p0)])
                 n_call+=1
             else :
-                s[3] = np.where(np.all(self.points == point2,axis=1))[0][0]
-            # list of new candidates (accepted an rejected)
-            L_new = [(s[i],s[4],max(self.res[s[i],-1],self.res[s[4],-1])) for i in range(4) if (self.res[s[i],1] != self.res[s[4], 1] or self.res[s[i],0]<lvl0) and lvl<lvlmax-1]
-            L_newrejected = [(s[i],s[4],max(self.res[s[i],-1],self.res[s[4],-1])) for i in range(4) if self.res[s[i],1] == self.res[s[4], 1] and self.res[s[i],0]>=lvl0]
-            L_new.sort(key=lambda x:x[-1]); L_newrejected.sort(key=lambda x:x[-1])
-            self.L+=L_new; L_rejected = L_newrejected + L_rejected
-            if lvl<lvl0:
-                self.L.sort(key=lambda x:(-max(self.res[x[0],0],self.res[x[1],0]),-x[-1])) # width search starting with bad solutions to save the best for last and put them on top of the pile
-            elif greed == True: # actually just need to put the max on top, not sort the whole list at each addition
-                self.L.sort(key=lambda x:(x[-1])) # greedy search, for width search see 2 lines above, otherwise you dive depth-first, faster with bisect.insort or even better heapq.merge
-        # on pourrait bourrer les 2 dernières évaluations si L non vide mais la méthode est pas assez intéressante pour se prendre la tête, je veux juste pas de 0 pour pas casser la logcolorbar
-        self.points[n_call:], self.res[n_call:] = np.tile(self.points[0],self.n-n_call).reshape(self.n-n_call,2), np.tile(self.res[0],self.n-n_call).reshape(self.n-n_call,self.res.shape[1]) 
+                s[3] = np.where(np.all(self.points[:n_call] == point1,axis=1))[0][0]
+            if np.where(np.all(self.points == point2,axis=1))[0].size == 0:
+                s[4] = n_call
+                self.points[s[4]] = point2
+                self.res[s[4]] = np.concatenate([[lvl], self.traj.evaluate(point2-self.traj.p0)])
+                n_call+=1
+            else :
+                s[4] = np.where(np.all(self.points == point2,axis=1))[0][0]
+            # list of new candidates: accepted if both extremities have a different destination, and rejected otherwise, stop if lvl==lvlmax-1 then the children will bef lvlmax
+            L_new = [(s[0],s[i],max(self.res[s[0],-1],self.res[s[i],-1])) for i in range(1,5) if (self.res[s[0],1] != self.res[s[i], 1] or lvl<lvl0) and lvl<lvlmax]
+            L_newrejected = [(s[0],s[i],max(self.res[s[0],-1],self.res[s[i],-1])) for i in range(1,5) if (self.res[s[0],1] == self.res[s[i], 1] and lvl>=lvl0) and lvl<lvlmax]
+            L_new.sort(key=lambda x:x[-1]); L_newrejected.sort(key=lambda x:x[-1]) # order the 1-3 child(ren) by increasing score so the biggest is on top
+            self.L+=L_new; L_rejected = L_newrejected + L_rejected # do I prefer to visit first the highest or the lowest level (here the second option)
+            if len(self.L)==0 : # if no frontier segment remains to explore we can go deeper on non-frontier ones
+                self.L += L_rejected; L_rejected =[] # Je ne perdrai pas une semaine à cause d'une deepcopy. Je ne perdrai pas une semaine à cause d'une deepcopy. Je ne perdrai pas ...
+            if lvl == lvl0: # when getting at lvl0, order by -lvl and then by score, otherwise low levels end up at the bottom of candidates
+                self.L.sort(key=lambda x:(-max(self.res[x[0],0],self.res[x[1],0]),x[-1])) # explore lower levels first, then higher score first
+            elif greed == True: # actually just need to put the max on top, not sort the whole list at each addition O(N) vs O(NlogN)
+                self.L.sort(key=lambda x:(x[-1])) # greedy search, for width search include level, otherwise you dive depth-first, faster with bisect.insort or even better heapq.merge
+        self.points, self.res = self.points[:self.n], self.res[:self.n] # cutting the possible 2 last evaluations to get fair competition among methods
+        if n_call < self.n: # if lvlmax is too small compared to self.n, might get 0s which break the logcolorbar
+            self.points[n_call:], self.res[n_call:] = np.tile(self.points[0],self.n-n_call).reshape(self.n-n_call,2), np.tile(self.res[0],self.n-n_call).reshape(self.n-n_call,self.res.shape[1])
+        return self.points.copy(), self.res.copy()
 
 
     def delaunay_middles(self):
