@@ -127,6 +127,7 @@ class Display:
         self.traj.reset(v0=v0)
         P,_ = self.traj.compute_traj(border)
         ax.set_title('v = [{:.2f}, {:.2f}] : T = {:.2f}'.format(v0[0],v0[1],(P.shape[0]-1)*self.traj.dt))
+        ax.set_aspect(self.traj.span[1]/self.traj.span[0])
         ax.pcolormesh(self.xx, self.yy, self.pot.T, cmap='binary',vmin=self.pot_min,vmax=0)
         ax.axis([self.traj.bounds[0,0], self.traj.bounds[0,1], self.traj.bounds[1,0], self.traj.bounds[1,1]])
         ax.set_xticks([]),ax.set_yticks([])
