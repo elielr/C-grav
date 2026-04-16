@@ -118,4 +118,4 @@ Below all 41 nodes up to depth 3 are visited before letting the method explore u
 
 ![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/readme/8-fractal316.png?raw=true)
 
-While these methods and their metaparemeters affect the result, no clear winner emerges over all planet/shuttle configurations (though grid search and uniform MC remain consistently below linesearch and fractal methods, some regions are simply not worth exploring andeven at first glance).
+While these methods and their metaparemeters affect the result, no clear winner emerges over all planet/shuttle configurations (though grid search and uniform MC remain consistently below linesearch and fractal methods, some regions are simply not worth exploring even at first glance).
