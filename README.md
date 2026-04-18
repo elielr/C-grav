@@ -2,7 +2,7 @@ We consider the motion of a free-falling particle in a gravitational field gener
 With a fixed starting point, its full trajectory is then completely determined by its initial speed vector.
 
 This work was inspired by the highly addictive game [**Cosmic Drift**](https://store.steampowered.com/app/3601890/Cosmic_Drift/) by Shakawah in which you click somewhere in the frame to give an initial speed to a shuttle and watch it drift around the planets.
-Your score is then computed as the product of the flight time and a set of multipliers based on how close your shuttle came to each planet (the game page explains it more visually).\
+Your score is then computed as the product of the flight time and a set of multipliers based on how close your shuttle came to each planet (the game page explains it more visually).
 This project neglects the multipliers to focus solely on the maximization of flight time.
 
 Finite trajectory                                                                                                           | Infinite trajectory
