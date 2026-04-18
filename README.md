@@ -5,6 +5,8 @@ This work was inspired by the highly addictive game [**Cosmic Drift**](https://s
 Your score is then computed as the product of the flight time and a set of multipliers based on how close your shuttle came to each planet (the game page explains it more visually).
 This project neglects the multipliers to focus solely on the maximization of flight time.
 
+Our goal is to maximize the flight duration before crash or going out of bound (and investigate the possibility of infinite trajectories when relevant).
+
 Finite trajectory                                                                                                           | Infinite trajectory
 :--------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------:
 ![Eventually crashes in the middle planet](https://github.com/elielr/C-grav/blob/main/figs/readme/01-fintraj.png?raw=true)  |  ![Falls forever eventhough simulation ends after 300 steps](https://github.com/elielr/C-grav/blob/main/figs/readme/02-inftraj.png?raw=true)
@@ -12,11 +14,6 @@ Finite trajectory                                                               
 Here is an example of initial configuration consisting of a starting point and three planets, with several examples of trajectories associated with different initial velocities each represented by a red arrow. (The gravitational potential is indicated as shades of grey in the background)
 
 ![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/readme/1-Traj_examples.png?raw=true)
-
-<span style="font-size:1.5em;color:red">
-    Our goal is to maximize the flight duration before crash or going out of bound.
-</span> 
-    <span style="font-size:0.8em;">(and investigate the possibility of infinite trajectories)</span>
 
 As will be shown shown in the next section, the loss map is neither convex, differentiable, nor continuous. The following methods explore how to use the regularities and (so far empirical) properties of this specific problem to provide a heuristic solution to this optimization problem. Ideally in five minutes or less.
 
