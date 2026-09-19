@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import animation
 from matplotlib import colors
 
 plt.style.use('dark_background')    
@@ -96,7 +97,7 @@ class Trajectory(Planets) :
         return np.array([self.stop_cond(border), (P.shape[0]-1)*self.dt])       
 
 class Display:
-    def __init__(self, traj, n=1000, color_list=['orchid', 'mediumorchid', 'darkorchid', 'blueviolet', 'rebeccapurple', 'purple', 'darkmagenta','mediumvioletred','hotpink']):
+    def __init__(self, traj, n=1000, color_list=['orchid', 'mediumorchid', 'darkorchid', 'blueviolet', 'rebeccapurple', 'purple', 'darkmagenta','mediumvioletred','hotpink'],step=10):
         self.n = n
         self.traj = traj
 
@@ -110,6 +111,8 @@ class Display:
         self.color_list = color_list[:self.traj.N]+["#081838", "#8FE8FF"]
         self.colormap = colors.ListedColormap(self.color_list)
         self.colorbar_ticklabels = ['planet {}'.format(i+1) for i in range(self.traj.N)] + ['border', '(infinite)']
+
+        self.step = step
 
     def plot_config(self,title=False,ax=None):
         if ax is None:
@@ -136,3 +139,30 @@ class Display:
         ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='x',s=2e-4*min(ax.get_window_extent().width, ax.get_window_extent().height)**2,zorder=2.5)
         ax.arrow(self.traj.p0[0],self.traj.p0[1],v0[0],v0[1],color='r',head_width=0.05,alpha=0.8,length_includes_head=True,zorder=2.1)
         ax.plot(P[:,0],P[:,1],linewidth=1,zorder=2)
+
+    def gif_traj(self,v0,border=True):
+        self.traj.reset(v0=v0)
+        P,_ = self.traj.compute_traj(border)
+        fig, ax = plt.subplots(figsize=(4,4),layout='constrained',subplot_kw = {'aspect':1})
+        def animate(frame):        
+            ax.clear()
+            ax.set_aspect(self.traj.span[1]/self.traj.span[0])
+            ax.axis([self.traj.bounds[0,0], self.traj.bounds[0,1], self.traj.bounds[1,0], self.traj.bounds[1,1]])
+            ax.set_xticks([]),ax.set_yticks([])
+            ax.pcolormesh(self.xx, self.yy, self.pot.T, cmap='binary',vmin=self.pot_min,vmax=0)
+            ax.scatter(self.traj.p0[0],self.traj.p0[1],c='gold',marker='x',s=2e-4*min(ax.get_window_extent().width, ax.get_window_extent().height)**2,zorder=2.5)
+            for i in range(self.traj.N):
+                ax.add_patch(plt.Circle((self.traj.loc[i,0] , self.traj.loc[i,1]),self.traj.radius,color='k'))
+            if frame < P.shape[0]//self.step:
+                line, = ax.plot(P[0:self.step*frame,0], P[0:self.step*frame,1], lw=1,zorder=2)
+                point, = ax.plot(P[self.step*frame,0], P[self.step*frame,1], marker='.',color='gold',zorder=2.5)
+            else :
+                line, = ax.plot(P[:,0], P[:,1], lw=1,zorder=2)
+                point, = ax.plot(P[-1,0], P[-1,1], marker='.',color='red',zorder=2.5)
+                ax.arrow(self.traj.p0[0],self.traj.p0[1],v0[0],v0[1],color='r',head_width=0.05,alpha=0.8,length_includes_head=True,zorder=2.1)
+            return line, point
+        frame_number = P.shape[0]//self.step + 20 if P.shape[0] * self.traj.dt < self.traj.Tmax else P.shape[0]//self.step # 20 end frames showing complete traj
+        ani = animation.FuncAnimation(fig, animate, interval=30, blit=True, repeat=True, frames=frame_number) # repeat_delays=500 ?
+        title = '[{}, {}] - [{}, {}]'.format(self.traj.p0[0],self.traj.p0[1],v0[0],v0[1])
+        ani.save('figs/gif/{}.gif'.format(title), dpi=100, writer=animation.PillowWriter(fps=40))
+        # fps overrides interval : https://stackoverflow.com/questions/72191776/does-interval-matter-in-funcanimation-when-saving-to-a-file-with-a-specified-f
