@@ -4,7 +4,7 @@ Its full trajectory is then completely determined by its initial speed vector, s
 
 The goal is to maximize the flight duration before crash or going out of bound (acknowledging the possibility of infinite trajectories for certain initial configurations).
 
-Four search methods have been compared to maximize the flight duration: grid-based, Montecarlo, line-based and fractal.
+Four search methods have been compared to maximize the flight duration: [grid-based](#i---grid-search), [Montecarlo](#ii---monte-carlo-search), [line-based](#iii---linesearch) and [fractal](#iv---fractal-search).
 
 Finite trajectory                                                                                                           | Infinite trajectory
 :--------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------:
@@ -16,7 +16,7 @@ Here is an example of initial configuration consisting of a starting point and t
 
 As will be shown shown in the next section, the loss map is neither convex, differentiable, nor continuous. The following methods explore how to use the regularities and (so far empirical) properties of this specific problem to provide a heuristic solution to this optimization problem. Ideally in five minutes or less.
 
-## I - Grid search
+## I - [Grid search](https://github.com/elielr/C-grav/blob/main/Introduction.ipynb)
 
 The most straightforward approach would be to compute the trajectory for all the initial velocities (end point of the red arrow) on a grid.
 
@@ -45,7 +45,7 @@ To compare methods, we will limit ourselves to `10000 trajectory computations`, 
 
 The advantage of the grid search is that it doesn't miss any region by sampling uniformally, the inconvenient is that it wastes time sampling low flight-time regions and inside the continuous components, while it could be more beneficial to focus on the interfaces and regions of interest.
 
-## II - Monte Carlo search
+## II - [Monte Carlo search](https://github.com/elielr/C-grav/blob/main/MonteCarlo.ipynb)
 
 Another method, relatively similar to the grid search, is based on a uniform random sampling over the frame.\
 The main difference is the use of a Voronoï diagram to represent the results instead of a grid, each image pixel getting the evaluation of the closest point in the sampling to generate the same image.\
@@ -53,7 +53,7 @@ This does not significantly improve the results but gets rid of the arbitrary gr
 
 ![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/readme/4-MC.png?raw=true)
 
-## III - Linesearch
+## III - [Linesearch](https://github.com/elielr/C-grav/blob/main/Linesearch.ipynb)
 
 Since the higher flight-time match the regions of interface between different crash destinations (different colors in the top right plots), investigating these regions at high precision seems likely to provide interesting results.\
 Our first real optimization method does so by taking two initial velocities belonging to different regions of crash and zooming in on the discontinuity between them.\
@@ -89,7 +89,7 @@ The solutions produced tend to consistently outperform those of the grid search 
 This is of course true provided that the initial segment actually crosses a region with high flight duration, which is not always the case.\
 The draw of the initial segment remains quite arbitrary and the 1D limitation can effectively affect negatively performances. These issues can be mitigated by making multiple less precise linesearchs with different initial segments. Or by going 2D.
 
-## IV - Fractal search
+## IV - [Fractal search](https://github.com/elielr/C-grav/blob/main/Fractal_grid.ipynb)
 
 The fractal search method takes this frontier zooming approach to 2D.
 
