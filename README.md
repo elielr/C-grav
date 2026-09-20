@@ -101,7 +101,7 @@ The initial segment at level 0 is set as the bottom left and top right corners o
 
 This effectively creates a gridding with higher precision around borders and lower precision inside flat regions, which can then either be used to sample broadly or very narrowly depending on the minimal level level of recursion at which every candidate gets visited and the maximum level of recursion at which the branch is ended regardless of conditions to move on to another.
 
-Note: The full grid at level l contains in total $N = (2ˆ{l-1}+1)ˆ2 + 2ˆ{2l-2}$ points.
+Note: The full grid at level l contains in total $N = (2^{l-1}+1)^2 + 2^{2l-2}$ points.
 
 ![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/readme/7-fractal(0,8).png?raw=true)
 
@@ -123,4 +123,4 @@ A very narrow sampling such as the dichotomic linesearch locks on deeply on a sm
 
 On the other hand, a broad sampling yields more consistent performance over different configurations while keeping the ability to find regions resulting in infinite trajectories, at the cost of lesser peak-performance.
 
-The fractal-grid sampling overall outperforms both the grid and Monte Carlo samplings by diregarding regions of flat loss to focus on the spikes found near around the edges of the regions in the crash-site map.
+The fractal-grid sampling overall outperforms both the grid and Monte Carlo samplings by diregarding regions of flat loss to focus on the spikes found around the edges between different colors in the crash-site map.
