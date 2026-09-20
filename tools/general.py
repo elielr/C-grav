@@ -161,7 +161,7 @@ class Display:
                 point, = ax.plot(P[-1,0], P[-1,1], marker='.',color='red',zorder=2.5)
                 ax.arrow(self.traj.p0[0],self.traj.p0[1],v0[0],v0[1],color='r',head_width=0.05,alpha=0.8,length_includes_head=True,zorder=2.1)
             return line, point
-        frame_number = P.shape[0]//self.step + 20 if P.shape[0] * self.traj.dt < self.traj.Tmax else P.shape[0]//self.step # 20 end frames showing complete traj
+        frame_number = P.shape[0]//self.step + 40 if P.shape[0] * self.traj.dt < self.traj.Tmax else P.shape[0]//self.step # 40 end frames showing complete traj
         ani = animation.FuncAnimation(fig, animate, interval=30, blit=True, repeat=True, frames=frame_number) # repeat_delays=500 ?
         title = '[{}, {}] - [{}, {}]'.format(self.traj.p0[0],self.traj.p0[1],v0[0],v0[1])
         ani.save('figs/gif/{}.gif'.format(title), dpi=100, writer=animation.PillowWriter(fps=40))

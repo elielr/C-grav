@@ -134,7 +134,7 @@ class DisplayVoronoi(Display):
         ax.set_xticks([]),ax.set_yticks([])
         for i in range(self.sol.n): # no need to add "if not -1 in region :" since those are at n,...,n+4
             polygon = [self.vor.vertices[i] for i in self.vor.regions[self.vor.point_region[i]]]
-            ax.fill(*zip(*polygon),color = self.color_list[int(self.sol.res[i,1])-1],ec='w',lw=0.2)
+            ax.fill(*zip(*polygon),color = self.color_list[int(self.sol.res[i,-2])-1],ec='w',lw=0.2)
         cbar = plt.colorbar(mpl.cm.ScalarMappable(cmap=self.colormap),ax=ax,ticks=(np.arange(self.traj.N+2)+0.5)/(self.traj.N+2))
         cbar.ax.set_yticklabels(self.colorbar_ticklabels,rotation='vertical',verticalalignment='center')
         for i in range(self.traj.N):
