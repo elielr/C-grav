@@ -101,7 +101,7 @@ The initial segment at level 0 is set as the bottom left and top right corners o
 
 This effectively creates a gridding with higher precision around borders and lower precision inside flat regions, which can then either be used to sample broadly or very narrowly depending on the minimal level level of recursion at which every candidate gets visited and the maximum level of recursion at which the branch is ended regardless of conditions to move on to another.
 
-Note: The full grid at level l contains in total $N = (2^{l-1}+1)^2 + 2^{2l-2}$ points.
+Note: The full grid at level $l$ contains in total $N = (2^{l-1}+1)^2 + 2^{2l-2}$ points.
 
 ![C-Grav plot4 example: initial configuration - crash map - trajectory - score map](https://github.com/elielr/C-grav/blob/main/figs/readme/7-fractal(0,8).png?raw=true)
 
